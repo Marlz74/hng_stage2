@@ -25,8 +25,9 @@ class Core
             die();
         }
 
-        require_once './controller/' . ucwords($this->currentController) . '.php';
+        require_once './controller/' . ucwords($this->currentController) . '.php'; 
         $this->currentController = new $this->currentController;
+        
         if (isset($url[1])) {
             
             

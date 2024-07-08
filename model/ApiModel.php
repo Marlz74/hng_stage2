@@ -34,7 +34,7 @@ class ApiModel
      * Registers a new user.
      *
      * @param object $data An object containing user registration data.
-     * @return bool True if registration is successful, false otherwise.
+     * @return array True if registration is successful, false otherwise.
      */
     public function register($data)
     {
@@ -59,10 +59,9 @@ class ApiModel
 
         // If there are validation errors, return false
         if (count($errors) > 0) {
-            http_response_code(422);
-            return json_encode([
-                "errors" => $errors
-            ]);
+
+
+            return ["code" => 422, "data" => json_encode(["errors" => $errors])];
             // return false;
         }
 
@@ -73,10 +72,12 @@ class ApiModel
 
         // If email already exists, return error response
         if ($this->db->rowCount() > 0) {
-            http_response_code(422);
-            return json_encode([
+            
+            return [
+                "code"=>422,
+                "data"=>json_encode([
                 "errors" => ["field" => "email", "message" => "Email already exists"]
-            ]);
+            ])];
             // return false;
         }
 
@@ -91,12 +92,14 @@ class ApiModel
 
         // If registration query fails, return error response
         if ($this->db->rowCount() == 0) {
-            http_response_code(400);
-            return json_encode([
+            
+            return [
+                "code",400,
+                "data"=>json_encode([
                 "status" => "Bad request",
                 "message" => "Registration unsuccessful",
                 "statusCode" => 400
-            ]);
+            ])];
             // return false;
         }
 
@@ -128,8 +131,10 @@ class ApiModel
             ->execute();
 
         // Return success response with JWT token and user data
-        http_response_code(201);
-        return json_encode([
+        
+        return [
+            "code"=>201,
+            "data"=>json_encode([
             "status" => "success",
             "message" => "Registration successful",
             "data" => [
@@ -142,7 +147,7 @@ class ApiModel
                     "phone" => $phone,
                 ]
             ]
-        ]);
+        ])];
 
         // return true;
     }
@@ -335,7 +340,7 @@ class ApiModel
 
                 }
                 @$jwtData = Helper::validateJWT($token); // Validate JWT token
-                
+
                 return $jwtData['data']->userId;
             }
             //code...
@@ -356,16 +361,16 @@ class ApiModel
         if (empty($orgId) || empty($requestData['userId'])) {
             return false; // Return false if required parameters are missing
         }
-    // Check if user is already added to the organization
-        
+        // Check if user is already added to the organization
+
         $isUserAdded = $this->db->query("SELECT COUNT(*) as count FROM user_organisations WHERE orgid = :orgId AND userid = :userId")
             ->bind(":orgId", $orgId)
             ->bind(":userId", $requestData['userId'])
             ->single();
-            
+
         // If user is already added to the organization, return false
         if ($isUserAdded && $isUserAdded->count > 0) {
-            
+
             return false;
         }
 
@@ -389,11 +394,12 @@ class ApiModel
      * @param object $data An object containing 'name' and 'description' of the organization.
      * @return object|bool An object with 'orgId', 'name', and 'description' if successful, otherwise false.
      */
-    public function createOrganization( $data)
+    public function createOrganization($data)
     {
-        $userId=$this->isLoggedIn(true);
-        
-        if(!$userId) return false;
+        $userId = $this->isLoggedIn(true);
+
+        if (!$userId)
+            return false;
 
         // Extract 'name' and 'description' from $data object
         $name = isset($data['name']) ? Helper::sanitize($data['name']) : '';
@@ -412,13 +418,13 @@ class ApiModel
             if ($existingOrg) {
                 return false; // Organization with the same name already exists
             }
-            
+
 
             // Begin transaction
             $this->db->beginTransaction();
 
             // Insert organization
-            
+
             $this->db->query("INSERT INTO organisations(name, description,owner) VALUES (:name, :description,:owner)")
                 ->bind(":name", $name)
                 ->bind(":description", $description)
@@ -426,10 +432,10 @@ class ApiModel
                 ->execute();
 
             $orgId = $this->db->lastInsertId(); // Get the last inserted ID (orgId)
-            
+
 
             // Insert user into organization
-            
+
             $this->db->query("INSERT INTO user_organisations (orgid, userid) VALUES (:orgId, :userId)")
                 ->bind(":orgId", $orgId)
                 ->bind(":userId", $userId)
@@ -449,8 +455,10 @@ class ApiModel
     }
 
 
-    public function fetchOrganizationById($id){
-        $userid=$this->isLoggedIn(true);
+    public function fetchOrganizationById($id)
+    {
+        $userid = $this->isLoggedIn(true);
+        print_r(['gekk']); die;
         if (!$userid) {
             return false;
         }
@@ -461,8 +469,9 @@ class ApiModel
 
     }
 
-    public function fetchAllOrganizations(){
-        $userid=$this->isLoggedIn(true);
+    public function fetchAllOrganizations()
+    {
+        $userid = $this->isLoggedIn(true);
         if (!$userid) {
             return false;
         }

@@ -14,7 +14,9 @@ class Auth extends Controller
 
         if (Helper::getMethod() == 'POST') {
             $rawData = json_decode(file_get_contents("php://input"), true);
-            echo $this->model->register($rawData);
+            $res= $this->model->register($rawData);
+            http_response_code($res['code']);
+            echo $res['data'];
             die();
         }
         Response::set([

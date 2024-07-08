@@ -1,0 +1,16 @@
+{
+    "name": "sd/stage_22",
+    "autoload": {
+        "psr-4": {
+            "Sd\\Stage22\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "SD"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^11.2"
+    }
+}

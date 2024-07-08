@@ -12,7 +12,6 @@ class Controller {
     public function model($model) {
         // Require the model file
         require_once './model/' . $model . '.php';
-
         // Return an instance of the model
         return new (ucwords($model))();
     }
