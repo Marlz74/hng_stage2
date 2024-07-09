@@ -18,8 +18,8 @@ class Init_test extends Controller
         
         $users = $this->model->refresh("users", [
             'userId' => "SERIAL PRIMARY KEY",
-            'firstName' => "VARCHAR(255)",
-            'lastName' => "VARCHAR(255)",
+            'firstname' => "VARCHAR(255)",
+            'lastname' => "VARCHAR(255)",
             'email' => "VARCHAR(255) UNIQUE",
             'password' => "VARCHAR(255)",
             'phone' => "VARCHAR(255)",

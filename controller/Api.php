@@ -9,39 +9,6 @@ class Api extends Controller
         $this->model = $this->model('ApiModel');
     }
 
-    public function register()
-    {
-
-        if (Helper::getMethod() == 'POST') {
-            $rawData = json_decode(file_get_contents("php://input"), true);
-            echo $this->model->register($rawData);
-            die();
-        }
-        Response::set([
-            'statusCode' => 400,
-            'status' => "Bad Request",
-            'message' => 'Client error'
-        ]);
-        die();
-    }
-    public function login()
-    {
-
-        if (Helper::getMethod() == 'POST') {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $response = $this->model->login($data);
-            http_response_code($response['code']);
-            echo $response['data'];
-            die();
-        }
-        Response::set([
-            'statusCode' => 400,
-            'status' => "Bad Request",
-            'message' => 'Client error'
-        ]);
-        die();
-    }
-
     public function users($id = "")
     {
         if (Helper::getMethod() == 'GET') {

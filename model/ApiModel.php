@@ -458,7 +458,6 @@ class ApiModel
     public function fetchOrganizationById($id)
     {
         $userid = $this->isLoggedIn(true);
-        print_r(['gekk']); die;
         if (!$userid) {
             return false;
         }
